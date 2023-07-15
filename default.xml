@@ -7,6 +7,7 @@
 
   <remote alias="repo" fetch="https://github.com/uptane" name="uptane"/>
   <remote alias="repo" fetch="https://github.com/toradex" name="toradex-torizon"/>
+  <remote alias="repo" fetch="https://github.com/bshibley" name="bshibley"/>
 
   <project name="meta-security" path="layers/meta-security" remote="yocto" revision="d398cc6ea6716afd3a3a6e88ad8fbdc89510ef23"/>
   <project name="meta-updater" path="layers/meta-updater" remote="uptane" revision="30215ccd7df914d3ec577ac5c11c7a4dc777634a"/>
@@ -16,4 +17,5 @@
   <project name="meta-toradex-torizon" path="layers/meta-toradex-torizon" remote="toradex-torizon" revision="0121b61d6929bb6f0b8b050de59f763fcb4aac2d">
     <linkfile dest="setup-environment" src="scripts/setup-environment"/>
   </project>
+  <project name="meta-torizon-k3s" path="layers/meta-torizon-k3s" remote="bshibley" revision="5a22a2a6d9ad14118d7954d0d9bc3ec83238f4f7"/>
 </manifest>
