@@ -29,14 +29,15 @@ jobs:
       BRANCH: ${{ matrix.branch }}
       RECIPE: ${{ matrix.recipe }}
     container:
-      image: torizon/crops:${BRANCH}
+      image: torizon/crops:kirkstone-6.x.y
+      options: --user root
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       - name: Initialize Repository
-        run: repo init -u file://${$GITHUB_WORKSPACE} -b ${BRANCH} -m default.xml
+        run: repo init -u file://$GITHUB_WORKSPACE -b ${BRANCH} -m default.xml
 
       - name: Repo Sync
         run: repo sync
