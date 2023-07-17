@@ -37,8 +37,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Initialize Repository
-        run: repo init -u file://$GITHUB_WORKSPACE -b ${BRANCH} -m default.xml
-
+        run: |
+          mkdir -p .repo/manifests
+          cp default.xml .repo/manifests/.
+          repo init -u file://$GITHUB_WORKSPACE -m default.xml
+          
       - name: Repo Sync
         run: repo sync
 
