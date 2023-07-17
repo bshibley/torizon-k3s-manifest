@@ -18,9 +18,18 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: [self-hosted, Linux, X64]
+    strategy:
+      matrix:
+        branch: [kirkstone-6.x.y]
+        machine: [verdin-imx8mp]
+        recipe: [torizon-core-k3s]
+    env:
+      name: build
+      MACHINE: ${{ matrix.machine }}
+      BRANCH: ${{ matrix.branch }}
+      RECIPE: ${{ matrix.recipe }}
     container:
       image: torizon/crops:${BRANCH}
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -33,10 +42,10 @@ jobs:
         run: repo sync
 
       - name: Setup the build environment
-        run: MACHINE=verdin-imx8mp source setup-environment build
+        run: MACHINE=${MACHINE} source setup-environment build
         
       - name: Build the image
         run: |
           cd build
-          bitbake torizon-core-k3s
+          bitbake ${RECIPE}
 
