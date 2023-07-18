@@ -61,4 +61,16 @@ jobs:
             echo \"SSTATE_DIR ?= \\\"/share/sstate-cache\\\"\" >> conf/local.conf && \
             echo \"DL_DIR ?= \\\"/share/source-download\\\"\" >> conf/local.conf && \
             bitbake ${RECIPE}"
+            
+      - name: Deploy Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${RECIPE}
+          path: deploy
+          
+      - name: Save Artifacts Locally
+        run: mv deploy /share/deploy/$GITHUB_RUN_ID_${RECIPE}_${MACHINE}
+            
+      - name: Cleanup Workdir
+        run: rm -rf $GITHUB_WORKSPACE
 
