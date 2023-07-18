@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote alias="repo" fetch="https://github.com/agherzan" name="rpi"/>
+  <project name="meta-raspberrypi" path="layers/meta-raspberrypi" remote="rpi" revision="43683cb14b6afc144619335b3a2353b70762ff3e" upstream="kirkstone"/>
+</manifest>
