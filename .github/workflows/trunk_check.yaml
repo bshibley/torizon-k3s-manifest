@@ -1,5 +1,9 @@
-name: Pull Request
-on: [pull_request]
+name: trunk-check
+on:
+  # Triggers the workflow on push or pull request events but only for the "kirkstone-6.x.y" branch
+  push:
+    branches: [ "kirkstone-6.x.y" ]
+  pull_request:
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
