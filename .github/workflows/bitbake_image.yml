@@ -22,7 +22,7 @@ jobs:
       matrix:
         branch: [kirkstone-6.x.y]
         machine: [verdin-imx8mp]
-        recipe: [torizon-core-k3s]
+        recipe: [torizon-core-k3s-host]
     env:
       name: build
       MACHINE: ${{ matrix.machine }}
@@ -31,25 +31,31 @@ jobs:
     container:
       image: torizon/crops:kirkstone-6.x.y
       options: --user root
+      volumes:
+        - /share/sstate-cache:/share/sstate-cache 
+        - /share/source-download:/share/source-download
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Environment prep
+        run: useradd -u 1000 -m torizon
 
       - name: Initialize Repository
-        run: |
-          mkdir -p .repo/manifests
-          cp default.xml .repo/manifests/.
-          repo init -u file://$GITHUB_WORKSPACE -m default.xml
+        run: su torizon -c "repo init -u file://$GITHUB_WORKSPACE -b ${BRANCH} -m default.xml"
           
       - name: Repo Sync
-        run: repo sync
+        run: su torizon -c "repo sync"
 
-      - name: Setup the build environment
-        run: MACHINE=${MACHINE} source setup-environment build
-        
-      - name: Build the image
+      - name: Build the Image
         run: |
-          cd build
-          bitbake ${RECIPE}
+          su torizon -c " \
+            MACHINE=${MACHINE} EULA=1 source layers/meta-toradex-torizon/scripts/setup-environment build && \
+            cp ../layers/meta-torizon-k3s/conf/template/bblayers.conf conf/bblayers.conf && \
+            echo \"SSTATE_DIR ?= \\\"/share/sstate-cache\\\"\" >> conf/local.conf && \
+            echo \"DL_DIR ?= \\\"/share/source-download\\\"\" >> conf/local.conf && \
+            bitbake ${RECIPE}"
 
