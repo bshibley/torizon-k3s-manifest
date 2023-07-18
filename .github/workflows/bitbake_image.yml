@@ -44,8 +44,9 @@ jobs:
       - name: Environment prep
         run: |
           useradd -u 1000 -m torizon
-          ln -s /share/source-download downloads
-          ln -s /share/sstate-cache sstate-cache
+          su torizon -c " \
+            ln -s /share/source-download downloads; \
+            ln -s /share/sstate-cache sstate-cache"
 
       - name: Initialize Repository
         run: su torizon -c "repo init -u file://$GITHUB_WORKSPACE -b ${BRANCH} -m default.xml"
