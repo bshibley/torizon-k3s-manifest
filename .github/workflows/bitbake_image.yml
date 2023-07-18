@@ -1,4 +1,3 @@
-# trunk-ignore(checkov/CKV2_GHA_1)
 name: torizon-k3s-manifest-ci
 permissions: read-all
 on:
