@@ -8,14 +8,14 @@ on:
       # trunk-ignore(checkov/CKV_GHA_7)
       machine:
         # trunk-ignore(yamllint/quoted-strings)
-        description: 'Comma-separated list of MACHINEs to build for, e.g. "verdin-imx8mp","raspberrypi4-64"'
+        description: 'Comma-separated list of MACHINEs to build for, e.g. "verdin-imx8mp","genericx86-64"'
         required: true
         default: '"verdin-imx8mp"'
       recipe:
         # trunk-ignore(yamllint/quoted-strings)
-        description: 'Comma-separated list of recipes to build, e.g. "torizon-core-k3s-host","torizon-core-k3s-node"'
+        description: 'Comma-separated list of recipes to build, e.g. "torizon-core-k3s-server","torizon-core-k3s-agent"'
         required: true
-        default: '"torizon-core-k3s-host"'
+        default: '"torizon-core-k3s-server"'
 
 jobs:
   build:
@@ -23,8 +23,8 @@ jobs:
     strategy:
       matrix:
         branch: [kirkstone-6.x.y]
-        machine: ${{ fromJSON(format('[{0}]', inputs.machine || '"verdin-imx8mp","raspberrypi4-64"')) }}
-        recipe: ${{ fromJSON(format('[{0}]', inputs.recipe || '"torizon-core-k3s-host"')) }}
+        machine: ${{ fromJSON(format('[{0}]', inputs.machine || '"verdin-imx8mp","genericx86-64"')) }}
+        recipe: ${{ fromJSON(format('[{0}]', inputs.recipe || '"torizon-core-k3s-server","torizon-core-k3s-agent"')) }}
     env:
       name: build
       MACHINE: ${{ matrix.machine }}
