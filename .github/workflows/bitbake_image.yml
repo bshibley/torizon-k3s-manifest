@@ -41,7 +41,7 @@ jobs:
 
       - name: Environment prep
         run: |
-          useradd -u 1000 -m torizon
+          useradd -u 1001 -m torizon
           chown torizon:torizon /share/*
           chmod 777 /share/*
           
