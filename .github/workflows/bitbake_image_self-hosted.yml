@@ -1,4 +1,4 @@
-name: Bitbake Images
+name: Bitbake Images (self-hosted)
 permissions: read-all
 on:
   push:
