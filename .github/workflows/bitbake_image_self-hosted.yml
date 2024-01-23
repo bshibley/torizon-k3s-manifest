@@ -19,9 +19,7 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: [self-hosted, Linux, X64]
     strategy:
       matrix:
         branch: [kirkstone-6.x.y]
@@ -34,7 +32,7 @@ jobs:
       RECIPE: ${{ matrix.recipe }}
     container:
       image: torizon/crops:kirkstone-6.x.y
-      options: --user root
+      options: --user root -v /share/source-download:/share/source-download:rw -v /share/sstate-cache:/share/sstate-cache:rw -v /share/deploy:/share/deploy:rw
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -42,7 +40,10 @@ jobs:
           fetch-depth: 0
 
       - name: Environment prep
-        run: useradd -u 1001 -m torizon
+        run: |
+          useradd -u 1001 -m torizon
+          chown torizon:torizon /share/*
+          chmod 777 /share/*
           
       - name: Initialize Repository
         run: su torizon -c "repo init -u file://$GITHUB_WORKSPACE -b ${BRANCH} -m default.xml"
@@ -55,6 +56,8 @@ jobs:
           su torizon -c " \
             MACHINE=${MACHINE} EULA=1 source layers/meta-toradex-torizon/scripts/setup-environment build && \
             cp ../layers/meta-torizon-k3s/conf/template/bblayers.conf conf/bblayers.conf && \
+            echo \"SSTATE_DIR = \\\"/share/sstate-cache\\\"\" >> conf/local.conf && \
+            echo \"DL_DIR = \\\"/share/source-download\\\"\" >> conf/local.conf && \
             bitbake ${RECIPE}"
             
       - name: Deploy Artifacts
@@ -62,6 +65,9 @@ jobs:
         with:
           name: ${RECIPE}
           path: deploy
+          
+      - name: Save Artifacts Locally
+        run: mv deploy /share/deploy/$GITHUB_RUN_ID_${RECIPE}_${MACHINE}
             
       - name: Cleanup Workdir
         run: rm -rf $GITHUB_WORKSPACE
